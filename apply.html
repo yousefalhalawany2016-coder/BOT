@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>التقديم على الإدارة – KrakenSMP</title>
+  <meta name="description" content="قدم طلبك للانضمام لفريق إدارة سيرفر KrakenSMP وكن جزءاً من مجتمعنا المميز." />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts - Cairo -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #0d0f1a;
+      color: #e8eaf6;
+    }
+    .owner-badge {
+      color: #8B0000;
+      font-weight: bold;
+    }
+    .glass {
+      background: rgba(26, 31, 58, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .hero-glow {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(139,0,0,0.3) 0%, rgba(108,92,231,0) 70%);
+      z-index: 0;
+      filter: blur(60px);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#0d0f1a] text-slate-100 relative overflow-x-hidden">
+
+  <!-- Background glow effects -->
+  <div class="hero-glow top-20 right-10"></div>
+  <div class="hero-glow bottom-20 left-10"></div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="sticky top-0 z-50 glass border-b border-slate-800/80 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand & Owner -->
+      <div class="flex items-center gap-6">
+        <a href="index.html" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-900 to-indigo-600 flex items-center justify-center shadow-md shadow-red-950/50 group-hover:scale-105 transition">
+            <i class="fa-solid fa-cube text-xl text-white"></i>
+          </div>
+          <div>
+            <span class="text-xl font-black tracking-wider text-white">KrakenSMP</span>
+            <span class="block text-xs owner-badge">Owner: evilgamer13</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center gap-2">
+        <a href="index.html" class="px-4 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white font-medium transition">
+          <i class="fa-solid fa-house ml-2"></i>الرئيسية
+        </a>
+        <a href="apply.html" class="px-4 py-2 rounded-lg bg-red-950/40 text-red-400 font-semibold border border-red-900/50 transition">
+          <i class="fa-solid fa-user-shield ml-2"></i>التقديم على الإدارة
+        </a>
+        <a href="admin.html" class="px-4 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white font-medium transition" id="navAdminLink">
+          <i class="fa-solid fa-gauge-high ml-2"></i>لوحة التحكم
+        </a>
+        <a href="bot-generator.html" class="px-4 py-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white font-medium transition">
+          <i class="fa-solid fa-robot ml-2"></i>مولد البوت
+        </a>
+      </nav>
+
+      <!-- Auth Actions / User Profile -->
+      <div class="flex items-center gap-3">
+        <div id="authGuestSection">
+          <button id="openAuthModalBtn" class="bg-gradient-to-r from-red-800 to-red-950 hover:from-red-700 hover:to-red-900 text-white font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-red-950/40 transition flex items-center gap-2">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span>تسجيل الدخول</span>
+          </button>
+        </div>
+
+        <div id="authUserSection" class="hidden relative">
+          <button id="userDropdownBtn" class="flex items-center gap-3 bg-slate-800/80 hover:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 transition">
+            <img id="userAvatarImg" src="" alt="Avatar" class="w-8 h-8 rounded-full object-cover bg-red-900" />
+            <span id="userNameDisplay" class="font-semibold text-sm max-w-[120px] truncate">مستخدم</span>
+            <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          <div id="userDropdownMenu" class="absolute left-0 mt-2 w-56 glass rounded-2xl shadow-2xl border border-slate-700 py-2 hidden z-50">
+            <div class="px-4 py-2 border-b border-slate-700/60">
+              <span id="dropdownUserName" class="block font-bold text-sm text-white truncate">اسم المستخدم</span>
+              <span id="dropdownUserEmail" class="block text-xs text-slate-400 truncate">email@domain.com</span>
+            </div>
+            <button id="openMyAppsModalBtn" class="w-full text-right px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-list text-red-400"></i> تقديماتي (My Applications)
+            </button>
+            <div class="border-t border-slate-700/60 my-1"></div>
+            <button id="logoutBtn" class="w-full text-right px-4 py-2.5 text-sm text-red-400 hover:bg-red-950/30 flex items-center gap-2 font-semibold">
+              <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <button id="mobileMenuBtn" class="md:hidden p-2 rounded-xl bg-slate-800 text-slate-200">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobileMenu" class="hidden md:hidden glass border-t border-slate-800 px-4 py-4 space-y-2">
+      <a href="index.html" class="block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800">
+        <i class="fa-solid fa-house ml-2"></i>الرئيسية
+      </a>
+      <a href="apply.html" class="block px-4 py-2.5 rounded-lg bg-red-950/40 text-red-400 font-semibold">
+        <i class="fa-solid fa-user-shield ml-2"></i>التقديم على الإدارة
+      </a>
+      <a href="admin.html" class="block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800">
+        <i class="fa-solid fa-gauge-high ml-2"></i>لوحة التحكم
+      </a>
+      <a href="bot-generator.html" class="block px-4 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800">
+        <i class="fa-solid fa-robot ml-2"></i>مولد البوت
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow z-10 py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
+    
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-950/60 border border-red-900/50 text-red-400 text-sm font-semibold mb-4">
+        <i class="fa-solid fa-user-shield"></i>
+        <span>انضم إلى فريق الإدارة</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-black text-white mb-3">نموذج التقديم على إشراف KrakenSMP</h1>
+      <p class="text-slate-400 max-w-xl mx-auto mb-6">
+        املأ البيانات أدناه بدقة واحترافية. يُرجى ملاحظة أن تسجيل الدخول إلزامي لتقديم الطلب.
+      </p>
+
+      <!-- My Applications Quick Button -->
+      <button id="pageMyAppsBtn" class="hidden bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-6 py-2.5 rounded-xl border border-slate-700 transition items-center gap-2 mx-auto">
+        <i class="fa-solid fa-clipboard-list text-red-400"></i>
+        <span>عرض حالة تقديماتي</span>
+      </button>
+    </div>
+
+    <!-- Login Required Notice (Visible if logged out) -->
+    <div id="loginRequiredAlert" class="glass border border-amber-500/40 p-6 rounded-3xl mb-8 text-center hidden">
+      <div class="w-12 h-12 rounded-2xl bg-amber-950/60 text-amber-400 flex items-center justify-center text-xl mx-auto mb-3">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 class="text-xl font-bold text-white mb-2">تسجيل الدخول مطلوب</h3>
+      <p class="text-slate-300 text-sm mb-4">يجب عليك تسجيل الدخول بحسابك (قوكل أو البريد الإلكتروني) لكي تتمكن من إرسال طلب الإدارة الخاص بك.</p>
+      <button id="alertLoginBtn" class="bg-gradient-to-r from-red-800 to-red-950 hover:from-red-700 hover:to-red-900 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg transition">
+        تسجيل الدخول الآن
+      </button>
+    </div>
+
+    <!-- Application Form Container -->
+    <div id="applicationFormContainer" class="glass p-8 sm:p-10 rounded-3xl border border-slate-700 shadow-2xl relative">
+      
+      <!-- Overlay if logged out -->
+      <div id="formOverlay" class="absolute inset-0 bg-[#0d0f1a]/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center text-center p-6 hidden rounded-3xl">
+        <i class="fa-solid fa-lock text-4xl text-red-400 mb-3"></i>
+        <h3 class="text-xl font-bold text-white mb-2">النموذج مقفل</h3>
+        <p class="text-slate-300 text-sm mb-4">الرجاء تسجيل الدخول أولاً لتعبئة وإرسال طلب الإدارة.</p>
+        <button id="overlayLoginBtn" class="bg-red-800 hover:bg-red-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg transition">
+          تسجيل الدخول
+        </button>
+      </div>
+
+      <form id="staffApplicationForm" class="space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-2">اسم المستخدم في ماينكرافت (Minecraft Username) *</label>
+            <input type="text" id="mcUsername" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-red-500 outline-none" placeholder="مثال: Steve_123" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-2">العمر (Age) *</label>
+            <input type="number" id="mcAge" min="10" max="99" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-red-500 outline-none" placeholder="مثال: 18" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-2">معرف ديسكورد (Discord Tag) *</label>
+            <input type="text" id="discordTag" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-red-500 outline-none" placeholder="username#0000 أو @username" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-2">الرتبة المطلوبة (Desired Rank) *</label>
+            <select id="desiredRank" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-red-500 outline-none">
+              <option value="Helper">مساعد (Helper)</option>
+              <option value="Moderator">مشرف (Moderator)</option>
+              <option value="Admin">مراقب (Admin)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-2">الخبرة السابقة في الإدارة (Previous Experience) *</label>
+          <textarea id="experience" rows="3" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-red-500 outline-none" placeholder="اذكر السيرفرات التي عملت بها سابقاً ومدة خبرتك..."></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-2">لماذا تريد الانضمام لفريق إشراف KrakenSMP؟ *</label>
+          <textarea id="whyJoin" rows="4" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-red-500 outline-none" placeholder="اشرح لنا سبب رغبتك في الانضمام وما يمكنك تقديمه للسيرفر..."></textarea>
+        </div>
+
+        <button type="submit" id="submitAppBtn" class="w-full bg-gradient-to-r from-red-800 to-red-950 hover:from-red-700 hover:to-red-900 text-white font-bold py-4 rounded-xl shadow-xl transition flex items-center justify-center gap-3 text-lg">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>إرسال الطلب إلى الإدارة</span>
+        </button>
+      </form>
+    </div>
+
+  </main>
+
+  <!-- My Applications Modal -->
+  <div id="myAppsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass max-w-2xl w-full p-8 rounded-3xl border border-slate-700 shadow-2xl relative max-h-[80vh] flex flex-col">
+      <button id="closeMyAppsModalBtn" class="absolute top-4 left-4 text-slate-400 hover:text-white text-xl">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-red-950 border border-red-900/50 flex items-center justify-center text-red-400 text-xl mx-auto mb-2">
+          <i class="fa-solid fa-clipboard-list"></i>
+        </div>
+        <h3 class="text-2xl font-black text-white">تقديماتي (My Applications)</h3>
+        <p class="text-slate-400 text-sm">تابع حالة طلبات الإدارة الخاصة بك</p>
+      </div>
+
+      <div class="overflow-y-auto flex-grow divide-y divide-slate-800 space-y-4" id="myAppsListContainer">
+        <!-- Dynamically loaded -->
+      </div>
+
+      <div id="myAppsEmptyState" class="hidden py-12 text-center text-slate-400">
+        <i class="fa-solid fa-folder-open text-3xl mb-2 text-slate-600"></i>
+        <p class="text-sm">لم تقم بإرسال أي طلب إشراف حتى الآن.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="glass border-t border-slate-800 py-10 px-4 sm:px-6 lg:px-8 mt-20">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-right">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-red-900 flex items-center justify-center text-white font-bold">K</div>
+        <span class="font-bold text-white">KrakenSMP &copy; 2026</span>
+      </div>
+      <div class="text-slate-400 text-sm">
+        جميع الحقوق محفوظة. <span class="owner-badge">Owner: evilgamer13</span>
+      </div>
+      <div class="flex gap-4 text-slate-400 text-lg">
+        <a href="#" class="hover:text-red-400 transition"><i class="fa-brands fa-discord"></i></a>
+        <a href="#" class="hover:text-red-400 transition"><i class="fa-brands fa-twitter"></i></a>
+        <a href="#" class="hover:text-red-400 transition"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Auth Modal -->
+  <div id="authModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass max-w-md w-full p-8 rounded-3xl border border-slate-700 shadow-2xl relative">
+      <button id="closeAuthModalBtn" class="absolute top-4 left-4 text-slate-400 hover:text-white text-xl">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center mb-8">
+        <div class="w-12 h-12 rounded-2xl bg-red-950 border border-red-900/50 flex items-center justify-center text-red-400 text-xl mx-auto mb-3">
+          <i class="fa-solid fa-user-lock"></i>
+        </div>
+        <h3 class="text-2xl font-black text-white">تسجيل الدخول إلى KrakenSMP</h3>
+        <p class="text-slate-400 text-sm mt-1">سجل دخولك لتقديم طلب إدارة</p>
+      </div>
+
+      <!-- Google Sign In Button -->
+      <button id="googleSignInBtn" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-3 mb-6">
+        <i class="fa-brands fa-google text-red-600 text-lg"></i>
+        <span>تسجيل الدخول بقوقل (Google)</span>
+      </button>
+
+      <div class="relative flex py-2 items-center mb-6">
+        <div class="flex-grow border-t border-slate-700"></div>
+        <span class="flex-shrink mx-4 text-slate-500 text-xs">أو بالبريد الإلكتروني</span>
+        <div class="flex-grow border-t border-slate-700"></div>
+      </div>
+
+      <!-- Email / Password Form -->
+      <form id="emailAuthForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1.5">البريد الإلكتروني</label>
+          <input type="email" id="authEmail" required class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:border-red-500 outline-none text-sm" placeholder="name@example.com" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1.5">كلمة المرور</label>
+          <input type="password" id="authPassword" required class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:border-red-500 outline-none text-sm" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="w-full bg-gradient-to-r from-red-800 to-red-950 hover:from-red-700 hover:to-red-900 text-white font-bold py-3 rounded-xl shadow-lg transition">
+          تسجيل الدخول / إنشاء حساب
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 left-6 z-50 glass px-6 py-3 rounded-2xl border border-slate-700 shadow-2xl text-white text-sm translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="toastMsg">رسالة تنبيه</span>
+  </div>
+
+  <!-- Firebase & App Script -->
+  <script type="module">
+    import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword,
+      createUserWithEmailAndPassword, onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBc_iexTpvL8YSWySjbU-kHvOSAgLw3qRY",
+      authDomain: "y-group-games.firebaseapp.com",
+      projectId: "y-group-games",
+      storageBucket: "y-group-games.firebasestorage.app",
+      messagingSenderId: "1089942756101",
+      appId: "1:1089942756101:web:f751962e64633891a1f56c",
+      measurementId: "G-MR5W4ZSQ0N"
+    };
+
+    const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // DOM Elements
+    const $ = id => document.getElementById(id);
+    const authGuestSection = $('authGuestSection');
+    const authUserSection = $('authUserSection');
+    const openAuthModalBtn = $('openAuthModalBtn');
+    const authModal = $('authModal');
+    const closeAuthModalBtn = $('closeAuthModalBtn');
+    const googleSignInBtn = $('googleSignInBtn');
+    const emailAuthForm = $('emailAuthForm');
+    const authEmail = $('authEmail');
+    const authPassword = $('authPassword');
+    const userAvatarImg = $('userAvatarImg');
+    const userNameDisplay = $('userNameDisplay');
+    const userDropdownBtn = $('userDropdownBtn');
+    const userDropdownMenu = $('userDropdownMenu');
+    const dropdownUserName = $('dropdownUserName');
+    const dropdownUserEmail = $('dropdownUserEmail');
+    const logoutBtn = $('logoutBtn');
+    const mobileMenuBtn = $('mobileMenuBtn');
+    const mobileMenu = $('mobileMenu');
+    
+    const loginRequiredAlert = $('loginRequiredAlert');
+    const formOverlay = $('formOverlay');
+    const alertLoginBtn = $('alertLoginBtn');
+    const overlayLoginBtn = $('overlayLoginBtn');
+    const staffApplicationForm = $('staffApplicationForm');
+
+    const openMyAppsModalBtn = $('openMyAppsModalBtn');
+    const pageMyAppsBtn = $('pageMyAppsBtn');
+    const myAppsModal = $('myAppsModal');
+    const closeMyAppsModalBtn = $('closeMyAppsModalBtn');
+    const myAppsListContainer = $('myAppsListContainer');
+    const myAppsEmptyState = $('myAppsEmptyState');
+
+    // Toast function
+    window.showToast = function(msg, type='success') {
+      const toast = $('toast');
+      const toastIcon = $('toastIcon');
+      $('toastMsg').textContent = msg;
+      toastIcon.className = type === 'success' ? 'fa-solid fa-circle-check text-emerald-400' : 'fa-solid fa-circle-xmark text-red-400';
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    // Mobile menu toggle
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Modal toggles
+    const openModal = () => authModal.classList.remove('hidden');
+    const closeModal = () => authModal.classList.add('hidden');
+
+    openAuthModalBtn.addEventListener('click', openModal);
+    alertLoginBtn.addEventListener('click', openModal);
+    overlayLoginBtn.addEventListener('click', openModal);
+    closeAuthModalBtn.addEventListener('click', closeModal);
+    authModal.addEventListener('click', (e) => { if (e.target === authModal) closeModal(); });
+
+    // My Apps Modal toggles
+    const openMyAppsModal = async () => {
+      userDropdownMenu.classList.add('hidden');
+      const user = auth.currentUser;
+      if (!user) {
+        showToast('يجب تسجيل الدخول أولاً', 'error');
+        openModal();
+        return;
+      }
+      myAppsModal.classList.remove('hidden');
+      await fetchMyApplications(user.uid);
+    };
+
+    openMyAppsModalBtn.addEventListener('click', openMyAppsModal);
+    pageMyAppsBtn.addEventListener('click', openMyAppsModal);
+    closeMyAppsModalBtn.addEventListener('click', () => myAppsModal.classList.add('hidden'));
+    myAppsModal.addEventListener('click', (e) => { if (e.target === myAppsModal) myAppsModal.classList.add('hidden'); });
+
+    async function fetchMyApplications(uid) {
+      myAppsListContainer.innerHTML = '<div class="text-center py-8 text-slate-400"><i class="fa-solid fa-spinner animate-spin text-2xl"></i><p class="mt-2 text-sm">جاري جلب تقديماتك...</p></div>';
+      myAppsEmptyState.classList.add('hidden');
+
+      try {
+        const q = query(collection(db, 'staff_applications'), where('uid', '==', uid));
+        const snapshot = await getDocs(q);
+        const apps = [];
+        snapshot.forEach(docSnap => apps.push({ id: docSnap.id, ...docSnap.data() }));
+
+        if (apps.length === 0) {
+          myAppsListContainer.innerHTML = '';
+          myAppsEmptyState.classList.remove('hidden');
+          return;
+        }
+
+        myAppsEmptyState.classList.add('hidden');
+        myAppsListContainer.innerHTML = apps.map(app => {
+          let statusBadge = '';
+          let statusDesc = '';
+          let discordBtn = '';
+          const DISCORD_URL = 'https://discord.gg/Ye2RmM3TP';
+          if (app.status === 'accepted') {
+            statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-950 text-emerald-400 border border-emerald-900 flex items-center gap-1.5"><i class="fa-solid fa-check"></i> مقبول (Accepted)</span>';
+            statusDesc = 'مبروك تم قبول طلبك بنجاح ارجاء الدخول لسيرفر الديسكورد لاستلام الرتبة من الدعم';
+            discordBtn = `<a href="${DISCORD_URL}" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 bg-[#5865F2] hover:bg-[#4752c4] text-white font-bold py-2.5 rounded-xl transition shadow-lg"><i class="fa-brands fa-discord text-lg"></i> الانضمام لسيرفر الديسكورد</a>`;
+          } else if (app.status === 'rejected') {
+            statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-red-950 text-red-400 border border-red-900 flex items-center gap-1.5"><i class="fa-solid fa-xmark"></i> مرفوض (Rejected)</span>';
+            statusDesc = 'تم رفض طلبك ارجاء الدخول الى سيرفرنا الديسكورد وتواصل مع الدعم لمعرفة السبب';
+            discordBtn = `<a href="${DISCORD_URL}" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 bg-[#5865F2] hover:bg-[#4752c4] text-white font-bold py-2.5 rounded-xl transition shadow-lg"><i class="fa-brands fa-discord text-lg"></i> الانضمام لسيرفر الديسكورد</a>`;
+          } else {
+            statusBadge = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-950 text-amber-400 border border-amber-900 flex items-center gap-1.5 animate-pulse"><i class="fa-solid fa-clock"></i> قيد المراجعة (Pending)</span>';
+            statusDesc = 'طلبك قيد المراجعة من قبل مالك السيرفر والإدارة، سيتم الرد قريباً.';
+          }
+
+          return `
+            <div class="py-4 first:pt-0 last:pb-0 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-white text-base">الرتبة المطلوبة: ${escapeHtml(app.desiredRank)}</span>
+                ${statusBadge}
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-xs text-slate-400 bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                <div>اسم ماينكرافت: <strong class="text-white">${escapeHtml(app.mcUsername)}</strong></div>
+                <div>العمر: <strong class="text-white">${escapeHtml(app.mcAge)}</strong></div>
+                <div class="col-span-2">ديسكورد: <strong class="text-white">${escapeHtml(app.discordTag)}</strong></div>
+              </div>
+              <p class="text-xs text-slate-300 bg-slate-900/30 p-2.5 rounded-lg border border-slate-800/60">${statusDesc}</p>
+              ${discordBtn}
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error(err);
+        myAppsListContainer.innerHTML = '<div class="text-center py-6 text-red-400 text-sm">حدث خطأ أثناء جلب الطلبات.</div>';
+      }
+    }
+
+    // Dropdown toggle
+    userDropdownBtn.addEventListener('click', () => {
+      userDropdownMenu.classList.toggle('hidden');
+    });
+    window.addEventListener('click', (e) => {
+      if (!userDropdownBtn.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+        userDropdownMenu.classList.add('hidden');
+      }
+    });
+
+    // Google Sign In
+    googleSignInBtn.addEventListener('click', async () => {
+      try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+        closeModal();
+        showToast('تم تسجيل الدخول بنجاح!');
+      } catch (err) {
+        console.error(err);
+        showToast('فشل تسجيل الدخول بقوقل: ' + err.message, 'error');
+      }
+    });
+
+    // Email / Password Form Submit
+    emailAuthForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = authEmail.value;
+      const password = authPassword.value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        closeModal();
+        showToast('تم تسجيل الدخول بنجاح!');
+      } catch (err) {
+        try {
+          await createUserWithEmailAndPassword(auth, email, password);
+          closeModal();
+          showToast('تم إنشاء الحساب وتسجيل الدخول بنجاح!');
+        } catch (err2) {
+          showToast('خطأ في المصادقة: ' + err2.message, 'error');
+        }
+      }
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', async () => {
+      await signOut(auth);
+      userDropdownMenu.classList.add('hidden');
+      showToast('تم تسجيل الخروج بنجاح!');
+    });
+
+    // Auth State Observer
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        authGuestSection.classList.add('hidden');
+        authUserSection.classList.remove('hidden');
+        loginRequiredAlert.classList.add('hidden');
+        formOverlay.classList.add('hidden');
+        pageMyAppsBtn.classList.remove('hidden');
+        pageMyAppsBtn.classList.add('inline-flex');
+
+        const displayName = user.displayName || user.email.split('@')[0];
+        userNameDisplay.textContent = displayName;
+        dropdownUserName.textContent = displayName;
+        dropdownUserEmail.textContent = user.email;
+        if (user.photoURL) {
+          userAvatarImg.src = user.photoURL;
+        } else {
+          userAvatarImg.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${user.email}`;
+        }
+      } else {
+        authGuestSection.classList.remove('hidden');
+        authUserSection.classList.add('hidden');
+        loginRequiredAlert.classList.remove('hidden');
+        formOverlay.classList.remove('hidden');
+        pageMyAppsBtn.classList.add('hidden');
+        pageMyAppsBtn.classList.remove('inline-flex');
+      }
+    });
+
+    // Submit Staff Application to Firestore
+    staffApplicationForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        showToast('يجب تسجيل الدخول أولاً لإرسال الطلب', 'error');
+        openModal();
+        return;
+      }
+
+      const mcUsername = $('mcUsername').value.trim();
+      const mcAge = $('mcAge').value.trim();
+      const discordTag = $('discordTag').value.trim();
+      const desiredRank = $('desiredRank').value;
+      const experience = $('experience').value.trim();
+      const whyJoin = $('whyJoin').value.trim();
+
+      const submitBtn = $('submitAppBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i><span>جاري إرسال الطلب...</span>';
+
+      try {
+        await addDoc(collection(db, 'staff_applications'), {
+          uid: currentUser.uid,
+          userEmail: currentUser.email,
+          userName: currentUser.displayName || currentUser.email.split('@')[0],
+          mcUsername,
+          mcAge,
+          discordTag,
+          desiredRank,
+          experience,
+          whyJoin,
+          status: 'pending',
+          createdAt: serverTimestamp()
+        });
+
+        showToast('تم إرسال طلب الإدارة بنجاح! سيتم مراجعته قريباً.');
+        staffApplicationForm.reset();
+      } catch (err) {
+        console.error(err);
+        showToast('حدث خطأ أثناء إرسال الطلب: ' + err.message, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i><span>إرسال الطلب إلى الإدارة</span>';
+      }
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

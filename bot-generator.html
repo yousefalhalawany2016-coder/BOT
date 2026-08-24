@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KrakenSMP - مدير البوتات 24/7</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body { font-family: 'Cairo', sans-serif; background:#0d0f1a; color:#e8eaf6; }
+    .glass { background: rgba(26,31,58,0.85); backdrop-filter: blur(12px); border:1px solid rgba(255,255,255,0.1); }
+    .code { font-family: 'JetBrains Mono', monospace; }
+    .owner-badge { color:#8B0000; font-weight:bold; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <header class="sticky top-0 z-50 glass border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 font-black text-white"><span class="w-8 h-8 rounded-lg bg-red-900 flex items-center justify-center">K</span> KrakenSMP <span class="owner-badge text-xs mr-2">Owner: evilgamer13</span></a>
+      <nav class="flex gap-2 text-sm">
+        <a href="index.html" class="px-3 py-1.5 hover:bg-slate-800 rounded-lg">الرئيسية</a>
+        <a href="apply.html" class="px-3 py-1.5 hover:bg-slate-800 rounded-lg">التقديم</a>
+        <a href="admin.html" class="px-3 py-1.5 hover:bg-slate-800 rounded-lg">لوحة التحكم</a>
+        <a href="bot-generator.html" class="px-3 py-1.5 bg-red-950/40 text-red-400 rounded-lg border border-red-900/50">مدير البوتات</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-5xl mx-auto w-full p-4 lg:p-8 space-y-6">
+    <div class="text-center">
+      <h1 class="text-3xl font-black text-white"><i class="fa-solid fa-robot text-red-400 ml-2"></i> مدير بوتات ماينكرافت 24/7</h1>
+      <p class="text-slate-400 text-sm mt-2">شغّل البوت مباشرة من الموقع — يعمل على السيرفر حتى لو سكّرت المتصفح (عبر <code class="code bg-slate-800 px-1 rounded">child_process.spawn</code>)</p>
+    </div>
+
+    <div class="glass rounded-3xl p-6 lg:p-8 border border-slate-700 space-y-5">
+      <div class="grid lg:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1.5">آيبي السيرفر (serverIp) *</label>
+          <input id="serverIp" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 code text-sm focus:border-red-500 outline-none" placeholder="مثال: play.example.com:25565" value="" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1.5">اسم البوت (botName) *</label>
+          <input id="botName" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 code text-sm focus:border-red-500 outline-none" placeholder="اختر اسم للبوت" value="" />
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1.5">كلمة المرور (AuthMe - اختياري)</label>
+          <input id="botPassword" type="text" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 code text-sm focus:border-red-500 outline-none" placeholder="اتركه فاضي إذا لا يوجد حماية" />
+          <p class="text-xs text-slate-500 mt-1">إذا وجدت، سيرسل <code class="code">/register</code> و <code class="code">/login</code> تلقائياً</p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1.5">إصدار اللعبة</label>
+          <select id="version" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-red-500 outline-none">
+            <option value="" selected disabled>اختر الإصدار</option>
+            <option value="1.21.1">1.21.1</option>
+            <option value="1.21">1.21</option>
+            <option value="1.20.4">1.20.4</option>
+            <option value="1.20.1">1.20.1</option>
+            <option value="1.19.4">1.19.4</option>
+            <option value="">تلقائي (auto)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button id="startBtn" class="flex-1 bg-gradient-to-r from-emerald-700 to-emerald-900 hover:from-emerald-600 hover:to-emerald-800 text-white font-black py-3.5 rounded-xl shadow-xl flex items-center justify-center gap-2 text-base">
+          <i class="fa-solid fa-play"></i> تشغيل البوت من الموقع
+        </button>
+        <button id="stopBtn" class="flex-1 bg-slate-800 hover:bg-red-900 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 border border-slate-700">
+          <i class="fa-solid fa-stop"></i> إيقاف البوت
+        </button>
+      </div>
+
+      <div id="statusBox" class="hidden rounded-xl p-3 text-sm font-bold text-center"></div>
+    </div>
+
+    <div class="glass rounded-3xl border border-slate-700 overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-slate-700 bg-slate-900/60">
+        <span class="text-sm font-black"><i class="fa-solid fa-list ml-2 text-red-400"></i> البوتات النشطة على السيرفر</span>
+        <button id="refreshBtn" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700"><i class="fa-solid fa-rotate ml-1"></i> تحديث</button>
+      </div>
+      <div id="botsTable" class="p-4 text-sm text-slate-400 text-center">جاري التحميل...</div>
+    </div>
+
+    <div class="glass rounded-3xl border border-slate-700 overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-slate-700 bg-slate-900/60">
+        <span class="text-sm font-black"><i class="fa-solid fa-terminal ml-2 text-emerald-400"></i> الكونسول المباشر — يفتح تلقائياً عند التشغيل</span>
+        <span id="consoleStatus" class="text-xs text-slate-500">بانتظار التشغيل...</span>
+      </div>
+      <pre id="consoleBox" class="code bg-black/70 text-emerald-300 text-xs leading-5 p-4 h-64 overflow-auto text-left ltr" dir="ltr">[Console] افتح الصفحة عبر http://localhost:3000/bot-generator.html ثم اضغط "تشغيل البوت من الموقع" — سيظهر هنا مباشرة هل دخل السيرفر وهل أرسل /login و /gamemode spectator بدون الحاجة لكتابة أوامر</pre>
+    </div>
+  </main>
+
+  <footer class="glass border-t border-slate-800 py-6 text-center text-sm text-slate-500">KrakenSMP &copy; 2026 - Owner: <span class="owner-badge">evilgamer13</span></footer>
+
+<script>
+// ===== توليد bot.js (للتحميل المحلي) =====
+function generateBotCode({ serverIp, botName, botPassword, version }) {
+  let host = serverIp.split(':')[0];
+  let port = serverIp.includes(':') ? serverIp.split(':')[1] : '25565';
+  const hostStr = JSON.stringify(host);
+  const portNum = Number(port) || 25565;
+  const userStr = JSON.stringify(botName);
+  const passStr = JSON.stringify(botPassword || '');
+  const verStr = version ? JSON.stringify(version) : "false";
+  return `/**
+ * KrakenSMP - 24H Watcher Bot (PM2 Ready)
+ * Host: \${${hostStr}} | Bot: \${${userStr}} | Version: \${${verStr}}
+ * تشغيل: pm2 start \${${userStr}}.js --name \${${userStr}}
+ */
+const mineflayer = require('mineflayer');
+const CONFIG = { host: ${hostStr}, port: ${portNum}, username: ${userStr}, version: ${verStr}, auth: { enabled: ${!!botPassword}, password: ${passStr}, loginDelayMs: 3000 }, spectator: { enabled: true, delayMs: 5000 }, reconnectDelayMs: 5000 };
+let hasModeChanged = false; let bot=null;
+function createBot(){
+  bot = mineflayer.createBot({ host: CONFIG.host, port: CONFIG.port, username: CONFIG.username, version: CONFIG.version || false });
+  bot.on('spawn',()=>{
+    if(CONFIG.auth.enabled && CONFIG.auth.password){
+      setTimeout(()=>{ try{bot.chat(\`/register \${CONFIG.auth.password} \${CONFIG.auth.password}\`);}catch(e){} setTimeout(()=>{try{bot.chat(\`/login \${CONFIG.auth.password}\`);}catch(e){}},1200); }, CONFIG.auth.loginDelayMs);
+    }
+    const totalDelay = CONFIG.auth.enabled ? CONFIG.auth.loginDelayMs + CONFIG.spectator.delayMs + 1500 : CONFIG.spectator.delayMs;
+    setTimeout(()=>{ if(hasModeChanged) return; try{ bot.chat(\`/gamemode spectator \${CONFIG.username}\`); hasModeChanged=true; }catch(e){} }, totalDelay);
+  });
+  bot.on('end',()=>{ hasModeChanged=false; setTimeout(createBot, CONFIG.reconnectDelayMs); });
+}
+createBot();
+process.on('SIGINT',()=>{ try{bot.quit();}catch(e){} process.exit(0); });
+`;
+}
+
+const $ = id => document.getElementById(id);
+const statusBox = $('statusBox');
+function showStatus(msg, ok=true){
+  statusBox.className = ok ? 'rounded-xl p-3 text-sm font-bold text-center bg-emerald-950/50 text-emerald-300 border border-emerald-800' : 'rounded-xl p-3 text-sm font-bold text-center bg-red-950/50 text-red-300 border border-red-800';
+  statusBox.textContent = msg;
+  statusBox.classList.remove('hidden');
+  setTimeout(()=> statusBox.classList.add('hidden'), 4000);
+}
+
+// بوت واحد لكل شخص (حتى أنت) - localStorage
+function canCreateBot(botName){
+  const existing = localStorage.getItem('krakensmp_myBot');
+  if(existing && existing !== botName){
+    showStatus(`مسموح ببوت واحد فقط — لديك بالفعل "${existing}"، أوقفه أولاً`, false);
+    return false;
+  }
+  return true;
+}
+function lockBot(botName){
+  localStorage.setItem('krakensmp_myBot', botName);
+  updateStartButtonState();
+}
+function unlockBot(botName){
+  const existing = localStorage.getItem('krakensmp_myBot');
+  if(existing === botName) localStorage.removeItem('krakensmp_myBot');
+  updateStartButtonState();
+}
+function updateStartButtonState(){
+  const existing = localStorage.getItem('krakensmp_myBot');
+  if(existing){
+    $('startBtn').innerHTML = `<i class="fa-solid fa-lock ml-2"></i> لديك بوت "${existing}"`;
+    $('startBtn').classList.add('opacity-60');
+  } else {
+    $('startBtn').innerHTML = '<i class="fa-solid fa-play ml-2"></i> تشغيل البوت من الموقع';
+    $('startBtn').classList.remove('opacity-60');
+  }
+}
+updateStartButtonState();
+
+// تشغيل من الموقع عبر Backend + فتح الكونسول تلقائياً
+$('startBtn').addEventListener('click', async ()=>{
+  const serverIp = $('serverIp').value.trim();
+  const botName = $('botName').value.trim();
+  const botPassword = $('botPassword').value;
+  const version = $('version').value;
+  if(!serverIp || !botName) return showStatus('أدخل الآيبي واسم البوت', false);
+  if(!canCreateBot(botName)) return;
+  $('startBtn').disabled = true;
+  $('startBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin ml-2"></i> جاري التشغيل...';
+  try {
+    const res = await fetch('/start-bot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ serverIp, botName, botPassword, version })
+    });
+    const data = await res.json();
+    if(data.success) { lockBot(botName); showStatus(data.message, true); refreshBots(); startConsole(botName); $('consoleBox').scrollIntoView({behavior:'smooth'}); }
+    else showStatus(data.message || 'فشل', false);
+  } catch(e) {
+    showStatus('الخادم غير شغال — دبل كليك على server/شغّل-المدير.bat ('+e.message+')', false);
+  } finally {
+    $('startBtn').disabled = false;
+    updateStartButtonState();
+  }
+});
+
+let consoleInterval = null;
+let currentConsoleBot = null;
+
+function startConsole(botName){
+  currentConsoleBot = botName;
+  $('consoleStatus').textContent = `يعرض: ${botName} — مباشر`;
+  if(consoleInterval) clearInterval(consoleInterval);
+  async function fetchLogs(){
+    try{
+      const res = await fetch(`/logs/${encodeURIComponent(botName)}`);
+      const data = await res.json();
+      if(data.success && data.logs){
+        const box = $('consoleBox');
+        box.textContent = data.logs.join('\n') || '[Console] بانتظار دخول البوت...';
+        box.scrollTop = box.scrollHeight;
+        // كشف هل دخل فعلاً
+        const joined = data.logs.join(' ');
+        if(joined.includes('Spawned')) $('consoleStatus').textContent = `✅ ${botName} دخل السيرفر`;
+        if(joined.includes('proxy is busy')) $('consoleStatus').textContent = `⚠️ البروكسي مشغول — يعيد المحاولة تلقائياً`;
+        if(joined.includes('Spectator') && joined.includes('LOCKED')) $('consoleStatus').textContent = `✅ ${botName} في وضع المشاهد`;
+      }
+    }catch(e){}
+  }
+  fetchLogs();
+  consoleInterval = setInterval(fetchLogs, 1500);
+}
+
+$('stopBtn').addEventListener('click', async ()=>{
+  const botName = $('botName').value.trim();
+  if(!botName) return showStatus('أدخل اسم البوت لإيقافه', false);
+  try {
+    const res = await fetch('/stop-bot', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ botName }) });
+    const data = await res.json();
+    showStatus(data.message, data.success);
+    if(data.success) unlockBot(botName);
+    if(currentConsoleBot === botName && consoleInterval){ clearInterval(consoleInterval); $('consoleStatus').textContent = 'تم الإيقاف'; }
+    refreshBots();
+  } catch(e){ showStatus(e.message, false); }
+});
+
+async function refreshBots(){
+  const el = $('botsTable');
+  try {
+    const res = await fetch('/bots');
+    const data = await res.json();
+    if(!data.bots || data.bots.length===0){
+      el.innerHTML = '<span class="text-slate-500">لا يوجد بوتات نشطة — شغّل واحداً من الأعلى</span>';
+      return;
+    }
+    el.innerHTML = '<div class="space-y-2">'+data.bots.map(b=>`
+      <div class="flex items-center justify-between bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-3">
+        <div class="text-right">
+          <div class="font-black text-white">${b.botName} <span class="text-xs font-normal text-slate-400">#${b.pid}</span></div>
+          <div class="text-xs text-slate-400">${b.serverIp} • ${b.version} • ${new Date(b.startedAt).toLocaleTimeString('ar-EG')}</div>
+        </div>
+        <span class="px-3 py-1 rounded-full text-xs font-bold ${b.alive ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-red-950 text-red-400 border border-red-800'}">${b.alive ? 'online' : 'stopped'}</span>
+      </div>`).join('')+'</div>';
+  } catch(e){
+    el.innerHTML = '<span class="text-amber-400">شغّل الخادم أولاً: <code>cd server && npm start</code></span>';
+  }
+}
+$('refreshBtn').addEventListener('click', refreshBots);
+refreshBots();
+setInterval(refreshBots, 5000);
+
+
+</script>
+</body>
+</html>
