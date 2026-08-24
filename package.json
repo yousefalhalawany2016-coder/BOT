@@ -1,0 +1,15 @@
+{
+  "name": "krakensmp-bot-manager",
+  "version": "1.0.0",
+  "description": "Web-based Minecraft 24/7 Bot Generator & Manager - KrakenSMP",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "mineflayer": "^4.24.0"
+  }
+}
