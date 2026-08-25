@@ -32,8 +32,6 @@ if (!fs.existsSync(path.join(__dirname, '..', 'index.html')) && !fs.existsSync(p
 // خريطة البوتات النشطة: botName -> { process, serverIp, startedAt, logs: [] }
 const runningBots = new Map();
 const MAX_LOGS = 200;
-// بوت واحد لكل شخص (IP) - حتى أنت
-const ipToBot = new Map(); // ip -> botName
 
 /**
  * POST /start-bot
@@ -52,14 +50,7 @@ app.post('/start-bot', (req, res) => {
   if (!botName) return res.status(400).json({ success: false, message: 'اسم البوت غير صالح' });
 
   if (runningBots.has(botName)) {
-    return res.status(409).json({ success: false, message: `البوت "${botName}" يعمل بالفعل. أوقفه أولاً` });
-  }
-
-  // بوت واحد لكل IP (حتى أنت)
-  const clientIp = (req.headers['x-forwarded-for']?.split(',')[0].trim() || req.ip || req.socket.remoteAddress || 'unknown');
-  const existingBotForIp = ipToBot.get(clientIp);
-  if (existingBotForIp && runningBots.has(existingBotForIp)) {
-    return res.status(429).json({ success: false, message: `مسموح ببوت واحد فقط — لديك بالفعل "${existingBotForIp}"` });
+    return res.status(409).json({ success: false, message: `الاسم "${botName}" مستخدم — اختر اسماً آخر` });
   }
 
   // فصل host و port
@@ -131,9 +122,7 @@ app.post('/start-bot', (req, res) => {
     startedAt: new Date().toISOString(),
     logs,
     pushLog,
-    ownerIp: clientIp,
   });
-  ipToBot.set(clientIp, botName);
 
   return res.json({
     success: true,
@@ -157,9 +146,6 @@ app.post('/stop-bot', (req, res) => {
     setTimeout(() => { try { entry.process.kill('SIGKILL'); } catch(e){} }, 2000);
   } catch(e) {}
   runningBots.delete(botName);
-  if (entry.ownerIp) ipToBot.delete(entry.ownerIp);
-  // أيضاً حذف أي IP يشير لنفس البوت (احتياط)
-  for (const [ip, name] of ipToBot.entries()) if (name === botName) ipToBot.delete(ip);
   return res.json({ success: true, message: `تم إيقاف "${botName}"` });
 });
 
