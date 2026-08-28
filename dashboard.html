@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة تحكم البوتات - Kraken</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>body{font-family:'Cairo',sans-serif;background:#0f0f14;color:#e8eaf6} .code{font-family:'JetBrains Mono',monospace} .glass{background:rgba(30,30,40,0.9);border:1px solid rgba(255,255,255,0.08)}</style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <nav class="flex items-center justify-between px-6 py-4 border-b border-white/5 sticky top-0 bg-[#0f0f14]/80 backdrop-blur z-50">
+    <a href="index.html" class="flex items-center gap-2 font-black text-xl"><span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center">K</span> Kraken</a>
+    <div class="flex items-center gap-3">
+      <span id="userName" class="text-sm text-slate-400 hidden"></span>
+      <button id="logoutBtn" class="text-sm bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-full hidden">خروج</button>
+      <button id="loginBtn" class="bg-blue-600 text-white font-bold px-5 py-1.5 rounded-full text-sm">تسجيل دخول</button>
+    </div>
+  </nav>
+
+  <main class="flex-grow max-w-5xl mx-auto w-full p-4 lg:p-8 space-y-6">
+    <div id="authBox" class="glass rounded-3xl max-w-md mx-auto overflow-hidden">
+      <!-- Tabs -->
+      <div class="flex border-b border-white/10">
+        <button id="tabLogin" class="flex-1 py-4 text-center font-bold text-blue-500 border-b-2 border-blue-500 bg-white/5 transition">تسجيل الدخول</button>
+        <button id="tabRegister" class="flex-1 py-4 text-center font-bold text-slate-400 border-b-2 border-transparent hover:bg-white/5 transition">إنشاء حساب</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginForm" class="p-8 space-y-5">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">البريد الإلكتروني</label>
+            <input type="email" id="loginEmail" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500" placeholder="example@mail.com" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">كلمة المرور</label>
+            <input type="password" id="loginPassword" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500" placeholder="••••••••" />
+          </div>
+        </div>
+        <button id="submitLoginBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-xl transition">تسجيل الدخول</button>
+        <div class="relative flex items-center py-2">
+          <div class="flex-grow border-t border-white/10"></div>
+          <span class="flex-shrink-0 mx-4 text-slate-500 text-xs font-bold">أو</span>
+          <div class="flex-grow border-t border-white/10"></div>
+        </div>
+        <button id="googleLoginBtn" class="w-full bg-white text-black hover:bg-gray-200 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+          المتابعة باستخدام Google
+        </button>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" class="p-8 space-y-5 hidden">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">اسم المستخدم</label>
+            <input type="text" id="regName" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500" placeholder="KrakenUser" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">البريد الإلكتروني</label>
+            <input type="email" id="regEmail" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500" placeholder="example@mail.com" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">كلمة المرور</label>
+            <input type="password" id="regPassword" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500" placeholder="••••••••" />
+          </div>
+        </div>
+        <button id="submitRegBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-xl transition">إنشاء حساب جديد</button>
+        <div class="relative flex items-center py-2">
+          <div class="flex-grow border-t border-white/10"></div>
+          <span class="flex-shrink-0 mx-4 text-slate-500 text-xs font-bold">أو</span>
+          <div class="flex-grow border-t border-white/10"></div>
+        </div>
+        <button id="googleRegBtn" class="w-full bg-white text-black hover:bg-gray-200 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+          إنشاء حساب باستخدام Google
+        </button>
+      </div>
+    </div>
+
+    <div id="dashBox" class="hidden space-y-6">
+      <div class="glass rounded-3xl p-6 space-y-4">
+        <h2 class="font-black text-lg"><i class="fa-solid fa-plus ml-2 text-violet-400"></i> إنشاء بوت جديد</h2>
+        <div class="grid lg:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">آيبي السيرفر *</label>
+            <input id="serverIp" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 code text-sm outline-none focus:border-violet-500" placeholder="play.example.com:25565" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">اسم البوت *</label>
+            <input id="botName" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 code text-sm outline-none focus:border-violet-500" placeholder="KrakenBot" />
+          </div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">كلمة المرور (AuthMe)</label>
+            <input id="botPassword" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 code text-sm outline-none focus:border-violet-500" placeholder="اتركه فاضي إذا لا يوجد" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-400 mb-1">الإصدار</label>
+            <select id="version" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none">
+              <option value="" disabled selected>اختر الإصدار</option>
+              <option value="1.21.1">1.21.1</option>
+              <option value="1.21">1.21</option>
+              <option value="1.20.4">1.20.4</option>
+              <option value="1.20.1">1.20.1</option>
+              <option value="">تلقائي</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button id="startBtn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-black py-3.5 rounded-xl flex items-center justify-center gap-2"><i class="fa-solid fa-play"></i> تشغيل البوت</button>
+          <button id="stopBtn" class="flex-1 bg-slate-800 hover:bg-red-900 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 border border-white/10"><i class="fa-solid fa-stop"></i> إيقاف البوت</button>
+        </div>
+        <div id="statusBox" class="hidden rounded-xl p-3 text-sm font-bold text-center"></div>
+      </div>
+
+      <div class="glass rounded-3xl overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/5">
+          <span class="font-black text-sm"><i class="fa-solid fa-robot ml-2"></i> بوتاتك</span>
+          <span class="text-xs text-slate-500">بوت واحد لكل حساب</span>
+        </div>
+        <div id="botsTable" class="p-4 text-center text-sm text-slate-500">لا يوجد بوتات — أنشئ واحداً من الأعلى</div>
+      </div>
+
+      <div class="glass rounded-3xl overflow-hidden">
+        <div class="px-4 py-3 border-b border-white/5 bg-white/5 flex items-center justify-between">
+          <span class="font-black text-sm"><i class="fa-solid fa-terminal ml-2 text-emerald-400"></i> الكونسول المباشر</span>
+          <span id="consoleStatus" class="text-xs text-slate-500">بانتظار التشغيل</span>
+        </div>
+        <pre id="consoleBox" class="code bg-black/60 text-emerald-300 text-xs leading-5 p-4 h-56 overflow-auto text-left ltr" dir="ltr">[Console] اضغط تشغيل — سيظهر هنا هل دخل السيرفر</pre>
+      </div>
+    </div>
+  </main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCTu2vzdGP3lHaWwZ45BIzni6Xt-ucIkmc",
+  authDomain: "krakenbots-c3d70.firebaseapp.com",
+  projectId: "krakenbots-c3d70",
+  storageBucket: "krakenbots-c3d70.firebasestorage.app",
+  messagingSenderId: "1088073385713",
+  appId: "1:1088073385713:web:a17998321e9144a9ac0b50",
+  measurementId: "G-J0P03QNM19"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+
+const API = 'https://bot-h6py.onrender.com';
+const $ = id => document.getElementById(id);
+
+let currentUser = null;
+
+function updateAuth(){
+  if(currentUser){
+    $('authBox').classList.add('hidden');
+    $('dashBox').classList.remove('hidden');
+    $('loginBtn').classList.add('hidden');
+    $('logoutBtn').classList.remove('hidden');
+    $('userName').textContent = currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'User');
+    $('userName').classList.remove('hidden');
+    refreshBots();
+  } else {
+    $('authBox').classList.remove('hidden');
+    $('dashBox').classList.add('hidden');
+    $('loginBtn').classList.remove('hidden');
+    $('logoutBtn').classList.add('hidden');
+    $('userName').classList.add('hidden');
+  }
+}
+
+// مراقبة حالة تسجيل الدخول عبر فايربيس
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  updateAuth();
+});
+
+// تبديل الواجهات بين تسجيل الدخول وإنشاء الحساب
+$('tabLogin').onclick = () => {
+  $('loginForm').classList.remove('hidden');
+  $('registerForm').classList.add('hidden');
+  $('tabLogin').className = 'flex-1 py-4 text-center font-bold text-blue-500 border-b-2 border-blue-500 bg-white/5 transition';
+  $('tabRegister').className = 'flex-1 py-4 text-center font-bold text-slate-400 border-b-2 border-transparent hover:bg-white/5 transition';
+};
+$('tabRegister').onclick = () => {
+  $('registerForm').classList.remove('hidden');
+  $('loginForm').classList.add('hidden');
+  $('tabRegister').className = 'flex-1 py-4 text-center font-bold text-blue-500 border-b-2 border-blue-500 bg-white/5 transition';
+  $('tabLogin').className = 'flex-1 py-4 text-center font-bold text-slate-400 border-b-2 border-transparent hover:bg-white/5 transition';
+};
+
+$('submitLoginBtn').onclick = async () => {
+  const email = $('loginEmail').value;
+  const pass = $('loginPassword').value;
+  if(!email || !pass) return showStatus('الرجاء إدخال البريد الإلكتروني وكلمة المرور', false);
+  try {
+    $('submitLoginBtn').textContent = 'جاري التحقق...';
+    await signInWithEmailAndPassword(auth, email, pass);
+    showStatus('تم تسجيل الدخول بنجاح!', true);
+  } catch (error) {
+    showStatus('خطأ: ' + error.message, false);
+  } finally {
+    $('submitLoginBtn').textContent = 'تسجيل الدخول';
+  }
+};
+
+$('submitRegBtn').onclick = async () => {
+  const name = $('regName').value;
+  const email = $('regEmail').value;
+  const pass = $('regPassword').value;
+  if(!name || !email || !pass) return showStatus('الرجاء تعبئة جميع الحقول', false);
+  try {
+    $('submitRegBtn').textContent = 'جاري الإنشاء...';
+    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(userCred.user, { displayName: name });
+    currentUser = userCred.user;
+    updateAuth();
+    showStatus('تم إنشاء الحساب بنجاح!', true);
+  } catch (error) {
+    showStatus('خطأ: ' + error.message, false);
+  } finally {
+    $('submitRegBtn').textContent = 'إنشاء حساب جديد';
+  }
+};
+
+// تسجيل الدخول بقوقل عبر فايربيس
+const handleGoogleLogin = async () => {
+  try {
+    await signInWithPopup(auth, googleProvider);
+    showStatus('تم تسجيل الدخول بـ Google بنجاح!', true);
+  } catch (error) {
+    showStatus('فشل تسجيل الدخول: ' + error.message, false);
+  }
+};
+
+$('googleLoginBtn').onclick = handleGoogleLogin;
+$('googleRegBtn').onclick = handleGoogleLogin;
+
+$('loginBtn').onclick = () => { $('authBox').scrollIntoView({behavior: 'smooth'}); };
+$('logoutBtn').onclick = async () => {
+  try {
+    await signOut(auth);
+    showStatus('تم تسجيل الخروج', true);
+  } catch (error) {
+    showStatus('خطأ أثناء تسجيل الخروج', false);
+  }
+};
+
+function showStatus(msg, ok=true){
+  let el = $('statusBox');
+  if(!el) {
+    el = document.createElement('div');
+    el.id = 'statusBox';
+    document.body.appendChild(el);
+  }
+  el.className = ok ? 'fixed bottom-10 left-1/2 -translate-x-1/2 z-[999] rounded-xl px-6 py-3 text-sm font-bold text-center bg-emerald-950 text-emerald-300 border border-emerald-800 shadow-2xl transition-all' : 'fixed bottom-10 left-1/2 -translate-x-1/2 z-[999] rounded-xl px-6 py-3 text-sm font-bold text-center bg-red-950 text-red-300 border border-red-800 shadow-2xl transition-all';
+  el.textContent = msg; 
+  el.style.display = 'block';
+  setTimeout(()=> el.style.display = 'none', 4000);
+}
+
+let consoleInterval=null;
+function startConsole(botName){
+  $('consoleStatus').textContent=`يعرض: ${botName} — مباشر`;
+  if(consoleInterval) clearInterval(consoleInterval);
+  async function fetchLogs(){
+    try{
+      const res = await fetch(`${API}/logs/${encodeURIComponent(botName)}`);
+      const data = await res.json();
+      if(data.success && data.logs){
+        const box=$('consoleBox');
+        box.textContent = data.logs.join('\n') || '[Console] بانتظار دخول البوت...';
+        box.scrollTop = box.scrollHeight;
+        const joined = data.logs.join(' ');
+        if(joined.includes('Spawned')) $('consoleStatus').textContent=`✅ ${botName} دخل السيرفر`;
+        if(joined.includes('proxy is busy')) $('consoleStatus').textContent=`⚠️ البروكسي مشغول — يعيد المحاولة`;
+        if(joined.includes('Spectator') && joined.includes('LOCKED')) $('consoleStatus').textContent=`✅ ${botName} في وضع المشاهد`;
+      }
+    }catch(e){}
+  }
+  fetchLogs();
+  consoleInterval=setInterval(fetchLogs, 1500);
+}
+window.stopBot=async (name)=>{
+  try{
+    const res = await fetch(`${API}/stop-bot`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ botName: name }) });
+    const data = await res.json();
+    showStatus(data.message, data.success);
+    if(data.success) localStorage.removeItem('qmee_myBot');
+    if(consoleInterval) clearInterval(consoleInterval);
+    $('consoleStatus').textContent='تم الإيقاف';
+    refreshBots();
+  }catch(e){ showStatus(e.message, false); }
+};
+
+async function refreshBots(){
+  const el=$('botsTable');
+  try{
+    const res = await fetch(`${API}/bots`);
+    const data = await res.json();
+    const list = data.bots || [];
+    if(list.length===0){ el.innerHTML='<span class="text-slate-500">لا يوجد بوتات — أنشئ واحداً من الأعلى</span>'; localStorage.removeItem('qmee_myBot'); return; }
+    // اعرض كل البوتات مع تمييز بوتك
+    const myBot = localStorage.getItem('qmee_myBot');
+    el.innerHTML = '<div class="space-y-2">'+list.map(b=>`
+      <div class="flex items-center justify-between bg-black/40 border border-white/10 rounded-xl px-4 py-3 ${myBot===b.botName?'ring-1 ring-violet-500/50':''}">
+        <div class="text-right"><div class="font-black text-white">${b.botName} ${myBot===b.botName?'<span class="text-xs text-violet-400">(بوتك)</span>':''}</div><div class="text-xs text-slate-400">${b.serverIp} • ${b.version||'auto'}</div></div>
+        <div class="flex items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-bold ${b.alive?'bg-emerald-950 text-emerald-400 border border-emerald-800':'bg-red-950 text-red-400 border border-red-800'}">${b.alive?'online':'stopped'}</span>
+          <button onclick="stopBot('${b.botName}')" class="bg-red-900/50 hover:bg-red-800 text-red-300 px-3 py-1 rounded-full text-xs">إيقاف</button>
+        </div>
+      </div>`).join('')+'</div>';
+
+  }catch(e){ /* السيرفر نائم - لا تعرض رسالة */ }
+}
+refreshBots();
+setInterval(refreshBots, 5000);
+// Keep Render awake - ping every 4 minutes
+setInterval(()=> fetch(`${API}/bots`).catch(()=>{}), 240000);
+
+$('startBtn').onclick=async ()=>{
+  if(!currentUser) return showStatus('سجل دخول أولاً', false);
+  const serverIp=$('serverIp').value.trim();
+  const botName=$('botName').value.trim().replace(/[^a-zA-Z0-9_\-]/g,'_');
+  const botPassword=$('botPassword').value;
+  const version=$('version').value;
+  if(!serverIp || !botName) return showStatus('أدخل الآيبي واسم البوت', false);
+  const existingMyBot = localStorage.getItem('qmee_myBot');
+  if(existingMyBot){
+    if(existingMyBot !== botName){
+      try{ await fetch(`${API}/stop-bot`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({botName: existingMyBot})}); }catch(e){}
+      localStorage.removeItem('qmee_myBot');
+    } else {
+      return showStatus(`البوت "${botName}" يعمل بالفعل — أوقفه أولاً`, false);
+    }
+  }  $('startBtn').disabled=true; $('startBtn').innerHTML='<i class="fa-solid fa-spinner fa-spin ml-2"></i> جاري التشغيل...';
+  try{
+    const res = await fetch(`${API}/start-bot`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ serverIp, botName, botPassword, version }) });
+    const data = await res.json();
+    if(data.success){ localStorage.setItem('qmee_myBot', botName); showStatus(data.message, true); refreshBots(); startConsole(botName); }
+    else showStatus(data.message || 'فشل', false);
+  }catch(e){ showStatus('السيرفر نائم — انتظر 30 ثانية وحاول مجدداً', false); }
+  finally{ $('startBtn').disabled=false; $('startBtn').innerHTML='<i class="fa-solid fa-play ml-2"></i> تشغيل البوت'; }
+};
+$('stopBtn').onclick=async()=>{ const n=localStorage.getItem('qmee_myBot')||$('botName').value.trim(); if(!n) return showStatus('لا يوجد بوت',false); await stopBot(n); };
+</script>
+</body>
+</html>
